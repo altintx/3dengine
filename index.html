@@ -1,9 +1,10 @@
 <html>
 <head>
-<script type="text/javascript" src="bignum.js"></script>
 <script type="text/javascript" src="app.js"></script>
 </head>
-<body><canvas id="canvas" width="800" height="480" style="border:1px solid black;"></canvas>
-<pre id="map"></pre><h2>Compass</h2><div style="position:relative;"><div id="compass" style="position:absolute;left:0;top:0;">^</div></div>
+<body><canvas id="canvas" width="900" height="480" style="border:1px solid black;"></canvas>
+	<div style="position:absolute;left:860px;top:420px;border-radius:20px;border-style:solid;border-color:black;background-color: white; width:20px;height:20px;"><div style="position:relative;"><div id="compass" style="position:absolute;left:6px;top:2px;">^</div></div></div>
+	<a href="#" onclick="(function(m) { m.style.display = (m.style.display == 'block')? 'none': 'block'; }).call(window, document.getElementById('map'))">Toggle Map</a>
+<pre id="map" style="display:none;"></pre>
 </body>
 </html>
