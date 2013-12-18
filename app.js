@@ -181,37 +181,36 @@ var sprites = {
 	}
 };
 var map = [
-	"bybbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbybbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-	"b  g          r                bb  g          r                b",
-	"b  g          r                bb  g          r                b",
-	"b  g  o   ttttttt   gggggg   ggbb  g  o   ttttttt   gggggg   ggb",
-	"b  g  o      b      g          bb  g  o      b      g          b",
-	"b  g  o   r  b   gggg   gggggggbb  g  o   r  b   gggg   gggggggb",
-	"b     o   r      g             bb     o   r      g             b",
-	"brrrrrr   rggggggg   ggggggg   bbrrrrrr   rggggggg   ggggggg   b",
-	"b         rg             g     bb         rg             g     b",
-	"b  g   g   g             g     bb  g   g   g             g     b",
-	"bggg   g   g    gggggg   ggggggbbggg   g   g    gggggg   ggggggb",
-	"b      g   g    g          gg          g   g    g          ggrbb",
-	"b  ggggg   g    g          gg      ggggg   g    g          gg bb",
-	"b          g    ggggggggggggg  bb          g    ggggggggggggg bb",
-	"b  ggg  gggg                   bb   gg  gggg                  bb",
-	"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb   bbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-	"bybbbbbbbbbbbbbbbbbbbbbbbbbbbb   ybbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-	"b  g          r                  bbg          r                b",
-	"b  g  o   ttttttt   gggggg   ggbb  g  o   ttttttt   gggggg   ggb",
-	"b  g  o      b      g          bb  g  o      b      g          b",
-	"b  g  o   r  b   gggg   gggggggbb  g  o   r  b   gggg   gggggggb",
-	"b     o   r      g             bb     o   r      g             b",
-	"brrrrrr   rggggggg   ggggggg   bbrrrrrr   rggggggg   ggggggg   b",
-	"b         rg             g     bb         rg             g     b",
-	"b  g   g   g             g     bb  g   g   g             g     b",
-	"bggg   g   g    gggggg   ggggggbbggg   g   g    gggggg   ggggggb",
-	"b      g   g    g          gg          g   g    g          ggybb",
-	"b  ggggg   g    g          gg      ggggg   g    g          gg bb",
-	"b          g    ggggggggggggg  bb          g    ggggggggggggg bb",
-	"b  ggg  gggg                   bb  ggg  gggg                  bb",
-	"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+	"bybbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+	"b  g          r                b  g          r                b",
+	"b  g          r                b  g          r                b",
+	"b  g  o   ttttttt   gggggg   ggb  g  o   ttttttt   gggggg   ggb",
+	"b  g  o      b      g          b  g  o      b      g          b",
+	"b  g  o   r  b   gggg   gggggggb  g  o   r  b   gggg   gggggggb",
+	"b     o   r      g             b     o   r      g             b",
+	"brrrrrr   rggggggg   ggggggg   brrrrrr   rggggggg   ggggggg   b",
+	"b         rg             g     b         rg             g     b",
+	"b  g   g   g             g     b  g   g   g             g     b",
+	"bggg   g   g    gggggg   ggggggbggg   g   g    gggggg   ggggggb",
+	"b      g   g    g         g          g   g    g           gbrbb",
+	"b  ggggg   g    g         g      ggggg   g    g           g   b",
+	"b          g    ggggggggggg  b           g    ggggggggggggg   b",
+	"b  ggg  gggg                 b    gg  gggg                    b",
+	"bybbbbbbbbbbbbbbbbbbbbbbbbbbbb    bbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+	"b  g          r                 bbb          r                b",
+	"b  g  o   ttttttt   gggggg   ggbb g  o   ttttttt   gggggg   ggb",
+	"b  g  o      b      g          b  g  o      b      g          b",
+	"b  g  o   r  b   gggg   gggggggb  g  o   r  b   gggg   gggggggb",
+	"b     o   r      g             b     o   r      g             b",
+	"brrrrrr   rggggggg   ggggggg   brrrrrr   rggggggg   ggggggg   b",
+	"b         rg             g     b         rg             g     b",
+	"b  g   g   g             g     b  g   g   g             g     b",
+	"bggg   g   g    gggggg   ggggggbggg   g   g    gggggg   ggggggb",
+	"b      g   g    g           g         g   g    g          ggybb",
+	"b  ggggg   g    g           g      gggg   g    g          g   b",
+	"b          g    ggggggggggggg  b          g    gggggggggggg   b",
+	"b  ggg  gggg                   b  ggg  gggg                   b",
+	"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 ];
 
 function baddie() {
@@ -305,35 +304,107 @@ baddie.prototype.seek = function(player) {
 		return out;
 	};
 
+	var drawScene = function (current, canvas) {
+		var orientations = { INTERSECT: 1, PERPINDICULAR: 2 };
+
+		var wallOrientation = orientations.INTERSECT;
+
+		var direction = deg2rad(current.o);
+		var lastWall = false;
+		var drawQueue = [];
+
+		var angleRad, ixCell;
+
+		nextAngle: for (angleRad = direction - 1.48, ixCell = 0; angleRad < direction + 1.48; angleRad += 0.0592, ixCell++) {
+			var dX = Math.cos(angleRad),
+				dY = Math.sin(angleRad);
+			
+			for (var distance = 1; distance < 20; distance++) {
+				var tX = Math.floor(current.x + distance * dX),
+					tY = Math.floor(current.y + distance * dY);
+				
+				var sprite = map[tY][tX] || "";
+				if (sprites[sprite].solid) {
+					if (lastWall) {
+						if (lastWall.tX == tX && lastWall.tY == tY) {
+							lastWall.width++;
+						} else {
+							drawQueue.push(lastWall);
+							lastWall = {
+								x: ixCell,
+								tX: tX,
+								tY: tY,
+								width: 1,
+								sprite: addAlphaToSprite(sprites[sprite], distance)
+							};
+						}
+					} else {
+						lastWall = {
+							x: ixCell,
+							tX: tX,
+							tY: tY,
+							width: 1,
+							sprite: addAlphaToSprite(sprites[sprite], distance)
+						};
+					}
+					continue nextAngle;
+				}
+			}
+		}
+		drawQueue.push(lastWall);
+		return drawQueue;
+	};
+
 	var director = (function() {
 		var sprite_w = 18;
 		return function() {
 			canvas.clearRect(0,0,900,480);
 			// enemy.seek(current);
-			canvas.fillStyle="#9af";
+			canvas.fillStyle="#9af"; // sky
 			canvas.fillRect(0, 0, 900, 80);
-			canvas.fillStyle="#888";
+			canvas.fillStyle="#888"; // floor
 			canvas.fillRect(0,80, 900, 400);
 			var oldX = 0, oldY0 = 0, oldY1 = 480;
-			panorama(current.x, current.y, deg2rad(current.o)).map(function(sprite, index) {
-				var indent = 3 * Math.floor(Math.min((25 - Math.abs(index - 25)), (25 - Math.abs(index - 24)))/3);
-				var newY0 = indent,
-					newY1 = 480 - newY0 - sprite.distance * 35,
-					newX = (index+1) * sprite_w;
-				if (newY1 < newY0) newY1 = newY0 + 10;
-				canvas.fillStyle = sprite.color;
-				canvas.beginPath();
-				canvas.moveTo(oldX, oldY0);
-				canvas.lineTo(newX, newY0);
-				canvas.lineTo(newX, newY1);
-				canvas.lineTo(oldX, oldY1);
-				canvas.closePath();
-				canvas.fill();
-				oldX = newX;
-				oldY0 = newY0;
-				oldY1 = newY1;
-				// enemy.draw(canvas, current);
-			});
+			if (false /* version 1 */) {
+				panorama(current.x, current.y, deg2rad(current.o)).map(function(sprite, index) {
+					var indent = 3 * Math.floor(Math.min((25 - Math.abs(index - 25)), (25 - Math.abs(index - 24)))/3);
+					var newY0 = indent,
+						newY1 = 480 - newY0 - sprite.distance * 35,
+						newX = (index+1) * sprite_w;
+					if (newY1 < newY0) newY1 = newY0 + 10;
+					canvas.fillStyle = sprite.color;
+					canvas.beginPath();
+					canvas.moveTo(oldX, oldY0);
+					canvas.lineTo(newX, newY0);
+					canvas.lineTo(newX, newY1);
+					canvas.lineTo(oldX, oldY1);
+					canvas.closePath();
+					canvas.fill();
+					oldX = newX;
+					oldY0 = newY0;
+					oldY1 = newY1;
+					// enemy.draw(canvas, current);
+				});
+			} else {
+				drawScene(current, canvas).forEach(function(sprite, index) {
+					var indent = 3 * Math.floor(Math.min((25 - Math.abs(index - 25)), (25 - Math.abs(index - 24)))/3);
+					var newY0 = 0, //indent,
+						newY1 = 480 - newY0 - (sprite.sprite.distance - 1) * 35,
+						newX = oldX + sprite.width * sprite_w;
+					if (newY1 < newY0) newY1 = newY0 + 10;
+					canvas.fillStyle = sprite.sprite.color;
+					canvas.beginPath();
+					canvas.moveTo(oldX, oldY0);
+					canvas.lineTo(newX, newY0);
+					canvas.lineTo(newX, newY1);
+					canvas.lineTo(oldX, oldY1);
+					canvas.closePath();
+					canvas.fill();
+					oldX = newX;
+					oldY0 = newY0;
+					oldY1 = newY1;
+				});
+			}
 			window.requestAnimFrame(director);
 		};
 	}).call();
